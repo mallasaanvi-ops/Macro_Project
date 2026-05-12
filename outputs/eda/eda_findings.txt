@@ -1,0 +1,34 @@
+Exploratory Data Analysis Findings
+
+Dataset summary:
+ total_images  total_classes  average_width  average_height  min_width  max_width  min_height  max_height
+         2713             19         590.08          384.26         24        600          24         600
+
+Class counts:
+              label  image_count
+        Gammarus sp          987
+      Simuliidae sp          374
+         Asellus sp          294
+Sericostomatidae sp          151
+     Oligochaeta sp          134
+       Sphaerium sp          127
+        Baetidae sp          109
+      Erpobdella sp          107
+         Nemoura sp          106
+  Hydropsychidae sp           69
+     Ephemerellidae           68
+           Elmis sp           45
+             images           42
+          Lymnea sp           33
+         Leuctra sp           19
+          Sialis sp           19
+         Limnius sp           14
+ Leptophlebiidae sp            9
+        sample_data            6
+
+Class balance:
+The dataset appears imbalanced because the largest class has 164.50 times more images than the smallest class.
+
+Why this matters:
+This EDA helps the group understand the dataset before classification.
+It shows the number of images, number of classes, image sizes and class balance.
