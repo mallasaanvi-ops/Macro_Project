@@ -34,17 +34,17 @@ class MacroinvertebrateGUI:
         button_frame = tk.Frame(self.root)
         button_frame.pack(pady=15)
 
-        tk.Button(button_frame, text="Load Dataset", width=30, command=self.load_dataset).pack(pady=5)
-        tk.Button(button_frame, text="Show Dataset Summary", width=30, command=self.show_summary).pack(pady=5)
-        tk.Button(button_frame, text="View Class Distribution Chart", width=30, command=self.view_class_chart).pack(pady=5)
-        tk.Button(button_frame, text="View Sample Images", width=30, command=self.view_sample_images).pack(pady=5)
-        tk.Button(button_frame, text="Exit", width=30, command=self.root.quit).pack(pady=5)
+        tk.Button(button_frame, text="Load Dataset", width=35, command=self.load_dataset).pack(pady=5)
+        tk.Button(button_frame, text="Show EDA Findings", width=35, command=self.show_summary).pack(pady=5)
+        tk.Button(button_frame, text="View Class Distribution Chart", width=35, command=self.view_class_chart).pack(pady=5)
+        tk.Button(button_frame, text="View Sample Images", width=35, command=self.view_sample_images).pack(pady=5)
+        tk.Button(button_frame, text="Exit", width=35, command=self.root.quit).pack(pady=5)
 
         self.output_label = tk.Label(
             self.root,
             text="Status: Waiting for user action.",
             font=("Arial", 12),
-            wraplength=800,
+            wraplength=850,
             justify="center"
         )
         self.output_label.pack(pady=15)
@@ -61,15 +61,16 @@ class MacroinvertebrateGUI:
             messagebox.showerror("Missing Folder", "The outputs/eda folder was not found.")
 
     def show_summary(self):
-        summary_path = os.path.join(self.output_folder, "dataset_summary.txt")
+        summary_path = os.path.join(self.output_folder, "eda_findings.txt")
 
         if os.path.exists(summary_path):
             with open(summary_path, "r") as file:
                 summary = file.read()
             self.output_label.config(text=summary)
+            self.clear_image()
         else:
             self.output_label.config(
-                text="Dataset summary file not found. Expected file: outputs/eda/dataset_summary.txt"
+                text="EDA findings file not found. Expected file: outputs/eda/eda_findings.txt"
             )
 
     def view_class_chart(self):
@@ -77,7 +78,7 @@ class MacroinvertebrateGUI:
         self.display_image(chart_path, "Class distribution chart")
 
     def view_sample_images(self):
-        sample_path = os.path.join(self.output_folder, "sample_images.png")
+        sample_path = os.path.join(self.output_folder, "sample_images_grid.png")
         self.display_image(sample_path, "Sample macroinvertebrate images")
 
     def display_image(self, image_path, image_name):
@@ -88,12 +89,16 @@ class MacroinvertebrateGUI:
             return
 
         image = Image.open(image_path)
-        image.thumbnail((750, 400))
+        image.thumbnail((800, 420))
 
         self.current_image = ImageTk.PhotoImage(image)
         self.image_label.config(image=self.current_image)
 
         self.output_label.config(text=f"Displaying: {image_name}")
+
+    def clear_image(self):
+        self.image_label.config(image="")
+        self.current_image = None
 
 
 if __name__ == "__main__":
