@@ -1,0 +1,10 @@
+# Manual Testing
+
+| Test Number | Feature Tested | Steps | Expected Result | Actual Result | Status |
+|---|---|---|---|---|---|
+| 1 | Open GUI | Run gui_app.py | Main window opens correctly | Pending | Pending |
+| 2 | Load Dataset button | Click Load Dataset | Status label updates | Pending | Pending |
+| 3 | Show Dataset Summary button | Click Show Dataset Summary | Status label updates | Pending | Pending |
+| 4 | View Charts button | Click View Charts | Status label updates | Pending | Pending |
+| 5 | View Sample Images button | Click View Sample Images | Status label updates | Pending | Pending |
+| 6 | Exit button | Click Exit | Application closes | Pending | Pending |
