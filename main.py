@@ -1,15 +1,15 @@
+
 from pathlib import Path
 
 from src.data_loader import DataLoader
 from src.eda_analysis import EDAAnalysis
 from src.visualisations import Visualisations
 
-
 def main() -> None:
     """
     Run the Stage 1 dataset loading and EDA workflow.
     """
-    dataset_path = Path.home()/ "Downloads"/ "macro_project"
+   dataset_path = Path.home() / "Downloads"
     output_folder = Path("outputs/eda")
 
     output_folder.mkdir(parents=True, exist_ok=True)
