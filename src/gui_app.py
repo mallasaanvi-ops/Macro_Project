@@ -66,8 +66,9 @@ class MacroinvertebrateGUI:
         if os.path.exists(summary_path):
             with open(summary_path, "r") as file:
                 summary = file.read()
-            self.output_label.config(text=summary)
+
             self.clear_image()
+            self.output_label.config(text=summary)
         else:
             self.output_label.config(
                 text="EDA findings file not found. Expected file: outputs/eda/eda_findings.txt"
