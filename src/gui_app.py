@@ -1,3 +1,6 @@
+cd ~/Desktop/Macro_Project-main
+
+cat > src/gui_app.py <<'PY'
 import os
 import tkinter as tk
 from tkinter import messagebox
@@ -60,9 +63,7 @@ class MacroinvertebrateGUI:
         if os.path.exists(self.output_folder):
             files = os.listdir(self.output_folder)
             self.clear_image()
-            self.output_label.config(
-                text="EDA output folder found. Files available: " + ", ".join(files)
-            )
+            self.output_label.config(text="EDA folder found. Files: " + ", ".join(files))
             messagebox.showinfo("Dataset", "EDA output folder found successfully.")
         else:
             self.output_label.config(text="outputs/eda folder was not found.")
@@ -77,9 +78,7 @@ class MacroinvertebrateGUI:
 
         if findings_path is None:
             self.clear_image()
-            self.output_label.config(
-                text="No findings text file found in outputs/eda."
-            )
+            self.output_label.config(text="No EDA findings text file found.")
             return
 
         with open(findings_path, "r", encoding="utf-8") as file:
@@ -96,9 +95,7 @@ class MacroinvertebrateGUI:
 
         if chart_path is None:
             self.clear_image()
-            self.output_label.config(
-                text="No class distribution chart found in outputs/eda."
-            )
+            self.output_label.config(text="No class distribution chart found.")
             return
 
         self.display_image(chart_path, "Class distribution chart")
@@ -111,9 +108,7 @@ class MacroinvertebrateGUI:
 
         if sample_path is None:
             self.clear_image()
-            self.output_label.config(
-                text="No sample image grid found in outputs/eda."
-            )
+            self.output_label.config(text="No sample image grid found.")
             return
 
         self.display_image(sample_path, "Sample macroinvertebrate images")
@@ -136,3 +131,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = MacroinvertebrateGUI(root)
     root.mainloop()
+PY
+
+python3 src/gui_app.py
