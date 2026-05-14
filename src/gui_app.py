@@ -1,136 +1,210 @@
-cd ~/Desktop/Macro_Project-main
-
-cat > src/gui_app.py <<'PY'
-import os
+from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox
-from PIL import Image, ImageTk
+import subprocess
+import sys
+
+OUTPUT_FOLDER = Path("outputs/eda")
 
 
-class MacroinvertebrateGUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Macroinvertebrate Image Analysis System")
-        self.root.geometry("1000x750")
+def open_file(file_path: Path):
+    """
+    Open a file using the operating system default application.
+    """
 
-        self.output_folder = os.path.join("outputs", "eda")
-        self.current_image = None
-
-        self.create_layout()
-
-    def create_layout(self):
-        tk.Label(
-            self.root,
-            text="Macroinvertebrate Image Analysis System",
-            font=("Arial", 18, "bold")
-        ).pack(pady=15)
-
-        tk.Label(
-            self.root,
-            text="Use the buttons below to explore the macroinvertebrate dataset.",
-            font=("Arial", 12)
-        ).pack(pady=5)
-
-        button_frame = tk.Frame(self.root)
-        button_frame.pack(pady=15)
-
-        tk.Button(button_frame, text="Load Dataset", width=35, command=self.load_dataset).pack(pady=5)
-        tk.Button(button_frame, text="Show EDA Findings", width=35, command=self.show_findings).pack(pady=5)
-        tk.Button(button_frame, text="View Class Distribution Chart", width=35, command=self.view_class_chart).pack(pady=5)
-        tk.Button(button_frame, text="View Sample Images", width=35, command=self.view_sample_images).pack(pady=5)
-        tk.Button(button_frame, text="Exit", width=35, command=self.root.quit).pack(pady=5)
-
-        self.output_label = tk.Label(
-            self.root,
-            text="Status: Waiting for user action.",
-            font=("Arial", 12),
-            wraplength=900,
-            justify="center"
+    if not file_path.exists():
+        messagebox.showerror(
+            "Missing File",
+            f"{file_path.name} was not found."
         )
-        self.output_label.pack(pady=15)
+        return
 
-        self.image_label = tk.Label(self.root)
-        self.image_label.pack(pady=10)
+    try:
+        if sys.platform == "darwin":
+            subprocess.run(["open", str(file_path)])
 
-    def find_file(self, possible_names):
-        for name in possible_names:
-            path = os.path.join(self.output_folder, name)
-            if os.path.exists(path):
-                return path
-        return None
+        elif sys.platform == "win32":
+            subprocess.run(
+                ["start", str(file_path)],
+                shell=True
+            )
 
-    def load_dataset(self):
-        if os.path.exists(self.output_folder):
-            files = os.listdir(self.output_folder)
-            self.clear_image()
-            self.output_label.config(text="EDA folder found. Files: " + ", ".join(files))
-            messagebox.showinfo("Dataset", "EDA output folder found successfully.")
         else:
-            self.output_label.config(text="outputs/eda folder was not found.")
-            messagebox.showerror("Missing Folder", "The outputs/eda folder was not found.")
+            subprocess.run(["xdg-open", str(file_path)])
 
-    def show_findings(self):
-        findings_path = self.find_file([
-            "eda_findings.txt",
-            "dataset_summary.txt",
-            "summary.txt"
-        ])
-
-        if findings_path is None:
-            self.clear_image()
-            self.output_label.config(text="No EDA findings text file found.")
-            return
-
-        with open(findings_path, "r", encoding="utf-8") as file:
-            findings = file.read()
-
-        self.clear_image()
-        self.output_label.config(text=findings)
-
-    def view_class_chart(self):
-        chart_path = self.find_file([
-            "class_distribution.png",
-            "top_10_classes.png"
-        ])
-
-        if chart_path is None:
-            self.clear_image()
-            self.output_label.config(text="No class distribution chart found.")
-            return
-
-        self.display_image(chart_path, "Class distribution chart")
-
-    def view_sample_images(self):
-        sample_path = self.find_file([
-            "sample_images_grid.png",
-            "sample_images.png"
-        ])
-
-        if sample_path is None:
-            self.clear_image()
-            self.output_label.config(text="No sample image grid found.")
-            return
-
-        self.display_image(sample_path, "Sample macroinvertebrate images")
-
-    def display_image(self, image_path, image_name):
-        image = Image.open(image_path)
-        image.thumbnail((850, 450))
-
-        self.current_image = ImageTk.PhotoImage(image)
-        self.image_label.config(image=self.current_image)
-
-        self.output_label.config(text=f"Displaying: {image_name}")
-
-    def clear_image(self):
-        self.image_label.config(image="")
-        self.current_image = None
+    except Exception as error:
+        messagebox.showerror(
+            "Error",
+            f"Could not open file:\n{error}"
+        )
 
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = MacroinvertebrateGUI(root)
-    root.mainloop()
-PY
+def load_dataset():
+    """
+    Check whether the EDA output folder exists.
+    """
 
-python3 src/gui_app.py
+    if OUTPUT_FOLDER.exists():
+
+        files = list(OUTPUT_FOLDER.iterdir())
+
+        file_names = [file.name for file in files]
+
+        messagebox.showinfo(
+            "Success",
+            "EDA output folder found successfully."
+        )
+
+        output_label.config(
+            text=(
+                "EDA folder found.\nFiles: "
+                + ", ".join(file_names)
+            )
+        )
+
+    else:
+        messagebox.showerror(
+            "Missing Folder",
+            "The outputs/eda folder does not exist."
+        )
+
+
+def show_eda_findings():
+    """
+    Open eda_findings.txt
+    """
+
+    open_file(
+        OUTPUT_FOLDER / "eda_findings.txt"
+    )
+
+
+def view_class_distribution():
+    """
+    Open class_distribution.png
+    """
+
+    open_file(
+        OUTPUT_FOLDER / "class_distribution.png"
+    )
+
+
+def view_sample_images():
+    """
+    Open sample_images_grid.png
+    """
+
+    open_file(
+        OUTPUT_FOLDER / "sample_images_grid.png"
+    )
+
+
+# -----------------------------
+# GUI SETUP
+# -----------------------------
+
+root = tk.Tk()
+
+root.title(
+    "Macroinvertebrate Image Analysis System"
+)
+
+root.geometry("900x600")
+
+root.configure(bg="#f2f2f2")
+
+
+title_label = tk.Label(
+    root,
+    text="Macroinvertebrate Image Analysis System",
+    font=("Arial", 24, "bold"),
+    bg="#f2f2f2"
+)
+
+title_label.pack(pady=30)
+
+
+description_label = tk.Label(
+    root,
+    text=(
+        "Use the buttons below to explore "
+        "the macroinvertebrate dataset."
+    ),
+    font=("Arial", 14),
+    bg="#f2f2f2"
+)
+
+description_label.pack(pady=10)
+
+
+button_width = 40
+
+
+load_button = tk.Button(
+    root,
+    text="Load Dataset",
+    width=button_width,
+    height=2,
+    command=load_dataset
+)
+
+load_button.pack(pady=10)
+
+
+eda_button = tk.Button(
+    root,
+    text="Show EDA Findings",
+    width=button_width,
+    height=2,
+    command=show_eda_findings
+)
+
+eda_button.pack(pady=10)
+
+
+chart_button = tk.Button(
+    root,
+    text="View Class Distribution Chart",
+    width=button_width,
+    height=2,
+    command=view_class_distribution
+)
+
+chart_button.pack(pady=10)
+
+
+sample_button = tk.Button(
+    root,
+    text="View Sample Images",
+    width=button_width,
+    height=2,
+    command=view_sample_images
+)
+
+sample_button.pack(pady=10)
+
+
+exit_button = tk.Button(
+    root,
+    text="Exit",
+    width=button_width,
+    height=2,
+    command=root.destroy
+)
+
+exit_button.pack(pady=10)
+
+
+output_label = tk.Label(
+    root,
+    text="",
+    font=("Arial", 12),
+    bg="#f2f2f2",
+    wraplength=800,
+    justify="center"
+)
+
+output_label.pack(pady=30)
+
+
+root.mainloop()
