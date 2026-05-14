@@ -1,3 +1,4 @@
+print("RUNNING NEW GUI FILE")
 from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox
